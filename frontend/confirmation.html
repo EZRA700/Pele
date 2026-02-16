@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation - Collecte Communautaire</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- En-tête -->
+    <header class="page-header">
+        <div class="container">
+            <div class="text-center">
+                <h1><i class="bi bi-check-circle"></i> Soumission Enregistrée</h1>
+                <p class="lead">Suivez les instructions ci-dessous pour finaliser votre contribution</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="container mb-5">
+        <!-- Message d'alerte -->
+        <div id="alertContainer"></div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Carte de félicitations -->
+                <div class="card animate-slide-in mb-4">
+                    <div class="card-body text-center py-5">
+                        <div class="icon-circle mx-auto mb-3 animate-pulse" style="width: 100px; height: 100px; font-size: 3rem;">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+                        <h2 class="text-success mb-3">Merci pour votre contribution !</h2>
+                        <p class="lead text-muted">Votre soumission a été enregistrée avec succès.</p>
+                    </div>
+                </div>
+
+                <!-- Référence unique -->
+                <div class="reference-box animate-slide-in">
+                    <h5 class="mb-3">
+                        <i class="bi bi-bookmark-star"></i> Votre référence unique
+                    </h5>
+                    <div class="reference-code" id="referenceCode">
+                        <!-- Généré par JS -->
+                    </div>
+                    <button class="btn btn-outline-success" onclick="copyReference()">
+                        <i class="bi bi-clipboard"></i> Copier la référence
+                    </button>
+                    <p class="text-muted mt-3 mb-0">
+                        <small>
+                            <i class="bi bi-info-circle"></i> 
+                            Conservez cette référence pour suivre l'état de votre contribution
+                        </small>
+                    </p>
+                </div>
+
+                <!-- Récapitulatif -->
+                <div class="card animate-slide-in mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-file-text"></i> Récapitulatif</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Nom complet:</strong></p>
+                                <p class="text-muted" id="recap_nom">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Téléphone:</strong></p>
+                                <p class="text-muted" id="recap_telephone">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Type de contribution:</strong></p>
+                                <p class="text-muted" id="recap_type">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Montant:</strong></p>
+                                <p class="text-primary-custom fw-bold" style="font-size: 1.5rem;" id="recap_montant">-</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-2"><strong>Moyen de paiement:</strong></p>
+                                <p class="text-muted" id="recap_moyen">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions de paiement -->
+                <div class="card animate-slide-in mt-4" id="paymentInstructions">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle-fill"></i> 
+                            Étape suivante: Effectuer le paiement
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Important:</strong> Votre contribution ne sera validée qu'après réception et vérification du paiement.
+                        </div>
+
+                        <div class="steps">
+                            <div class="step-item">
+                                <h6>Ouvrez votre application <span id="appName">Mobile Money</span></h6>
+                            </div>
+                            
+                            <div class="step-item">
+                                <h6>Effectuez un transfert vers le numéro:</h6>
+                                <div class="payment-number" id="paymentNumber">
+                                    <!-- Généré par JS -->
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary copy-btn" onclick="copyNumber()">
+                                    <i class="bi bi-clipboard"></i> Copier le numéro
+                                </button>
+                            </div>
+                            
+                            <div class="step-item">
+                                <h6>Montant à envoyer:</h6>
+                                <div class="payment-number" id="paymentMontant">
+                                    <!-- Généré par JS -->
+                                </div>
+                            </div>
+                            
+                            <div class="step-item">
+                                <h6>Une fois le paiement effectué, saisissez le code de transaction ci-dessous</h6>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire pour le code de transaction -->
+                        <form id="codeTransactionForm" class="mt-4">
+                            <div class="mb-3">
+                                <label for="referenceOperateur" class="form-label fw-bold">
+                                    Code de transaction <span class="text-danger">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="referenceOperateur" 
+                                    placeholder="Ex: WV123456789, OM987654321, etc."
+                                    required
+                                    minlength="3"
+                                    maxlength="50">
+                                <small class="text-muted">
+                                    Le code que vous avez reçu par SMS après le paiement
+                                </small>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg" id="submitCodeBtn">
+                                    <i class="bi bi-send-check"></i> Envoyer le code de transaction
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Message de succès après envoi du code -->
+                <div class="card animate-slide-in mt-4 d-none" id="successCard">
+                    <div class="card-body text-center py-5">
+                        <div class="icon-circle mx-auto mb-3" style="background: var(--success-color); width: 100px; height: 100px; font-size: 3rem;">
+                            <i class="bi bi-check2-all"></i>
+                        </div>
+                        <h3 class="text-success mb-3">Tout est en ordre !</h3>
+                        <p class="lead mb-4">
+                            Votre code de transaction a été enregistré. 
+                            L'administrateur vérifiera votre paiement et validera votre contribution.
+                        </p>
+                        <p class="text-muted">
+                            Vous serez notifié une fois la contribution validée.
+                        </p>
+                        <div class="mt-4">
+                            <a href="index.html" class="btn btn-primary">
+                                <i class="bi bi-house"></i> Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bouton retour -->
+                <div class="text-center mt-4">
+                    <a href="index.html" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Faire une nouvelle contribution
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pied de page -->
+    <footer class="text-center py-4">
+        <div class="container">
+            <p class="text-muted mb-0">
+                &copy; 2026 Collecte Communautaire - Côte d'Ivoire
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Configuration -->
+    <script src="assets/js/config.js"></script>
+    
+    <!-- Confirmation JS -->
+    <script src="assets/js/confirmation.js"></script>
+</body>
+</html>

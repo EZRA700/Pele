@@ -1,0 +1,10 @@
+{
+  "nom_complet": "Kouassi Jean-Pierre",
+  "telephone": "0712345678",
+  "email": "kouassi.jp@example.com",
+  "quartier": "Cocody",
+  "type_contribution": "don",
+  "description": "Pour le projet de construction de l'église",
+  "montant": 50000,
+  "moyen_paiement": "wave"
+}

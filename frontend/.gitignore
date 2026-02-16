@@ -1,0 +1,21 @@
+# Configuration sensible
+assets/js/config.prod.js
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Dossiers temporaires
+node_modules/
+dist/
+build/
