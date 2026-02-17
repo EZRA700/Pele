@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Admin - Collecte Communautaire</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .login-header i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .login-body {
+            padding: 40px 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        }
+
+        .input-group-text {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            padding: 12px 16px;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 12px 16px;
+        }
+
+        .spinner-border-sm {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            font-size: 13px;
+            color: #666;
+        }
+
+        @media (max-width: 576px) {
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <i class="bi bi-shield-lock"></i>
+                <h1>Accès Administrateur</h1>
+                <p>Espace réservé aux administrateurs</p>
+            </div>
+
+            <!-- Body -->
+            <div class="login-body">
+                <!-- Message d'erreur -->
+                <div id="errorAlert" class="alert alert-danger d-none" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="errorMessage">Matricule ou mot de passe incorrect</span>
+                </div>
+
+                <!-- Formulaire de connexion -->
+                <form id="loginForm">
+                    <!-- Matricule -->
+                    <div class="mb-3">
+                        <label for="matricule" class="form-label">
+                            <i class="bi bi-person-badge me-1"></i> Matricule
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-hash"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="matricule" 
+                                placeholder="Entrez votre matricule"
+                                required
+                                autocomplete="username"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-key me-1"></i> Mot de passe
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                placeholder="Entrez votre mot de passe"
+                                required
+                                autocomplete="current-password"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Bouton de connexion -->
+                    <button type="submit" class="btn btn-login" id="loginBtn">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        Se connecter
+                    </button>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="login-footer">
+                <i class="bi bi-info-circle me-1"></i>
+                Collecte Communautaire - Système sécurisé
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script d'authentification -->
+    <script>
+        // ⚠️ CREDENTIALS ADMIN - À MODIFIER PAR L'ADMINISTRATEUR
+        const ADMIN_CREDENTIALS = {
+            matricule: 'ADMIN001',  // ← Modifier ici
+            password: 'Admin@2026'   // ← Modifier ici
+        };
+
+        // Durée de session (en millisecondes) - 2 heures
+        const SESSION_DURATION = 2 * 60 * 60 * 1000;
+
+        const loginForm = document.getElementById('loginForm');
+        const matriculeInput = document.getElementById('matricule');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorAlert = document.getElementById('errorAlert');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Vérifier si déjà connecté
+        if (isAuthenticated()) {
+            window.location.href = 'index.html';
+        }
+
+        // Gestion soumission formulaire
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+
+            const matricule = matriculeInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validation
+            if (!matricule || !password) {
+                showError('Veuillez remplir tous les champs');
+                return;
+            }
+
+            // Désactiver le bouton pendant la vérification
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Connexion en cours...';
+
+            // Simuler un délai (pour éviter les attaques brute force)
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Vérification des credentials
+            if (matricule === ADMIN_CREDENTIALS.matricule && password === ADMIN_CREDENTIALS.password) {
+                // Authentification réussie
+                createSession();
+                
+                // Redirection avec animation
+                loginBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Connexion réussie !';
+                loginBtn.style.background = 'linear-gradient(135deg, #00b09b, #96c93d)';
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } else {
+                // Authentification échouée
+                showError('Matricule ou mot de passe incorrect');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i> Se connecter';
+                
+                // Secouer le formulaire
+                loginForm.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    loginForm.style.animation = '';
+                }, 500);
+            }
+        });
+
+        // Créer une session
+        function createSession() {
+            const sessionData = {
+                authenticated: true,
+                matricule: matriculeInput.value.trim(),
+                loginTime: Date.now(),
+                expiresAt: Date.now() + SESSION_DURATION
+            };
+            localStorage.setItem('adminSession', JSON.stringify(sessionData));
+        }
+
+        // Vérifier l'authentification
+        function isAuthenticated() {
+            const sessionData = localStorage.getItem('adminSession');
+            if (!sessionData) return false;
+
+            try {
+                const session = JSON.parse(sessionData);
+                const now = Date.now();
+
+                // Vérifier si la session est expirée
+                if (now > session.expiresAt) {
+                    localStorage.removeItem('adminSession');
+                    return false;
+                }
+
+                return session.authenticated === true;
+            } catch (e) {
+                localStorage.removeItem('adminSession');
+                return false;
+            }
+        }
+
+        // Afficher message d'erreur
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorAlert.classList.remove('d-none');
+        }
+
+        // Masquer message d'erreur
+        function hideError() {
+            errorAlert.classList.add('d-none');
+        }
+
+        // Animation shake pour erreur
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+                20%, 40%, 60%, 80% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
