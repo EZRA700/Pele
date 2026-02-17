@@ -2,9 +2,9 @@
 # Ce fichier permet de déployer backend + frontend en une seule fois
 
 services:
-  # ========================================
+  
   # SERVICE BACKEND (API Node.js)
-  # ========================================
+  
   - type: web
     name: collecte-backend
     runtime: node
@@ -28,9 +28,9 @@ services:
         value: https://collecte-frontend.onrender.com
     healthCheckPath: /health
     
-  # ========================================
+  
   # SERVICE FRONTEND (Site Statique)
-  # ========================================
+  
   - type: web
     name: collecte-frontend
     runtime: static
