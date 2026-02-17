@@ -22,9 +22,7 @@ services:
       - key: DB_PATH
         value: ./database/collecte.db
       - key: ADMIN_SECRET_KEY
-        generateValue: true  # Render génère automatiquement une clé sécurisée
-        # OU spécifiez manuellement (décommenter la ligne ci-dessous) :
-        # value: YOUR_SECURE_KEY_HERE
+        value: f9228dc7440232c1df16f82809e394e18da2b2f8a50521e4f283ebb7fba8b01e
       - key: ALLOWED_ORIGINS
         # Modifiez cette valeur après le déploiement pour inclure l'URL frontend
         value: https://collecte-frontend.onrender.com

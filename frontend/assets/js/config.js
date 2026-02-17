@@ -13,7 +13,7 @@ const CONFIG = {
     // Clé secrète admin (doit correspondre à ADMIN_SECRET_KEY du backend)
     // ⚠️ NE JAMAIS COMMITTER la vraie clé sur GitHub
     // En production, utilisez une variable d'environnement ou un fichier séparé
-    ADMIN_KEY: '39f33f4034fbacf126bf805fb9922059aa19457d51b7637a3a16f34ffda3c7f3',
+    ADMIN_KEY: 'f9228dc7440232c1df16f82809e394e18da2b2f8a50521e4f283ebb7fba8b01e',
     
     // Lien de paiement Wave (compte marchand)
     WAVE_PAYMENT_URL: 'https://pay.wave.com/m/M_ci_ni2XKML6kc_S/c/ci/',
