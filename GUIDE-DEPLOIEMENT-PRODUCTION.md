@@ -1,5 +1,5 @@
 # 🚀 Guide de Déploiement en Production
-## Backend sur Render + Frontend sur Netlify
+## Backend + Frontend sur Render (Déploiement Complet)
 
 ---
 
@@ -7,7 +7,7 @@
 1. [Prérequis](#prérequis)
 2. [Préparation des Fichiers](#préparation-des-fichiers)
 3. [Déploiement du Backend sur Render](#déploiement-du-backend-sur-render)
-4. [Déploiement du Frontend sur Netlify](#déploiement-du-frontend-sur-netlify)
+4. [Déploiement du Frontend sur Render](#déploiement-du-frontend-sur-render)
 5. [Configuration Post-Déploiement](#configuration-post-déploiement)
 6. [Tests de Production](#tests-de-production)
 7. [Maintenance et Monitoring](#maintenance-et-monitoring)
@@ -19,8 +19,7 @@
 
 ### Comptes Requis
 - [ ] Compte GitHub (pour héberger le code source)
-- [ ] Compte Render (https://render.com - gratuit)
-- [ ] Compte Netlify (https://netlify.com - gratuit)
+- [ ] Compte Render (https://render.com - gratuit pour les deux services)
 
 ### Outils Locaux
 - [ ] Git installé sur votre machine
@@ -67,7 +66,7 @@ git push -u origin main
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-**IMPORTANT** : Copiez cette clé, vous en aurez besoin pour Render et Netlify.
+**IMPORTANT** : Copiez cette clé, vous en aurez besoin pour les deux services Render (backend et frontend).
 
 Exemple de clé générée :
 ```
@@ -109,13 +108,13 @@ Cliquez sur **"Advanced"** puis ajoutez ces variables d'environnement :
 ADMIN_SECRET_KEY=a72f9d3e8b1c4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f
 PORT=3003
 NODE_ENV=production
-ALLOWED_ORIGINS=http://localhost:5500,https://VOTRE-SITE.netlify.app
+ALLOWED_ORIGINS=https://VOTRE-FRONTEND.onrender.com
 DB_PATH=./database/collecte.db
 ```
 
 **IMPORTANT** : 
 - Remplacez `a72f9d3e8b1c4a5f...` par votre vraie clé générée
-- Remplacez `VOTRE-SITE.netlify.app` par votre vrai domaine Netlify (vous l'aurez après l'étape 3)
+- Remplacez `VOTRE-FRONTEND.onrender.com` par votre vrai domaine frontend Render (vous l'aurez après l'étape 3)
 
 ### 2.4 Créer le Service
 
@@ -142,55 +141,88 @@ Pour vérifier :
 
 ---
 
-## 🌐 ÉTAPE 3 : Déploiement du Frontend sur Netlify
+## 🌐 ÉTAPE 3 : Déploiement du Frontend sur Render (Static Site)
 
-### 3.1 Créer un Nouveau Site
+### 3.1 Créer un Nouveau Static Site
 
-1. **Connectez-vous à Netlify** : https://app.netlify.com
-2. **Cliquez sur "Add new site"** → **"Import an existing project"**
-3. **Choisissez GitHub**
-   - Autorisez Netlify à accéder à vos repos
-   - Sélectionnez `collecte-communautaire`
+1. **Retournez sur Render Dashboard** : https://dashboard.render.com
+2. **Cliquez sur "New +"** → **"Static Site"**
+3. **Sélectionnez votre repository** `collecte-communautaire`
 
-### 3.2 Configuration du Déploiement
+### 3.2 Configuration du Static Site
+
+Remplissez les informations suivantes :
 
 | Champ | Valeur |
 |-------|--------|
-| **Branch to deploy** | `main` |
-| **Base directory** | `frontend` |
-| **Build command** | (laisser vide) |
-| **Publish directory** | `.` |
+| **Name** | `collecte-frontend` (ou votre choix) |
+| **Region** | `Frankfurt (EU Central)` (même région que le backend) |
+| **Branch** | `main` |
+| **Root Directory** | `frontend` |
+| **Build Command** | (laisser vide) |
+| **Publish Directory** | `.` |
 
-### 3.3 Variables d'Environnement (Optionnel)
+**Note** : Render détectera automatiquement qu'il s'agit de fichiers HTML statiques.
 
-Pour plus de sécurité, vous pouvez utiliser des variables d'environnement Netlify.
+### 3.3 Headers et Redirections (Optionnel)
 
-Allez dans **Site settings** → **Environment variables** :
+Si vous avez un fichier `netlify.toml`, vous devrez créer un fichier `render.yaml` à la racine du projet :
 
-```plaintext
-VITE_API_URL=https://collecte-backend.onrender.com/api
-VITE_ADMIN_KEY=a72f9d3e8b1c4a5f6e7d8c9b0a1f2e3d4c5b6a7f8e9d0c1b2a3f4e5d6c7b8a9f
+Créez `render.yaml` :
+
+```yaml
+services:
+  - type: web
+    name: collecte-backend
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3003
+      - key: DB_PATH
+        value: ./database/collecte.db
+      - key: ADMIN_SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  - type: web
+    name: collecte-frontend
+    env: static
+    region: frankfurt
+    plan: free
+    buildCommand: ""
+    staticPublishPath: ./frontend
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
 ```
+
+**Note** : Ce fichier est optionnel pour un déploiement manuel via l'interface.
 
 ### 3.4 Déployer le Site
 
-1. Cliquez sur **"Deploy site"**
-2. ⏳ Attendez le déploiement (2-3 minutes)
+1. Cliquez sur **"Create Static Site"**
+2. ⏳ Attendez le déploiement (1-2 minutes)
 3. ✅ Votre site est en ligne !
 
 ### 3.5 Récupérer l'URL du Frontend
 
-Netlify vous donne une URL comme :
+Render vous donne une URL comme :
 ```
-https://random-name-123456.netlify.app
+https://collecte-frontend.onrender.com
 ```
 
-### 3.6 Personnaliser le Nom de Domaine (Optionnel)
-
-1. Allez dans **Site settings** → **Domain management**
-2. Cliquez sur **"Options"** → **"Edit site name"**
-3. Changez en : `collecte-communautaire` (si disponible)
-4. Votre nouvelle URL : `https://collecte-communautaire.netlify.app`
+**IMPORTANT** : Copiez cette URL, vous en aurez besoin pour configurer CORS.
 
 ---
 
@@ -198,14 +230,14 @@ https://random-name-123456.netlify.app
 
 ### 4.1 Mettre à Jour l'URL de l'API dans le Frontend
 
-**Option A : Modification Directe (Simple)**
+**Modification du fichier config.js**
 
 1. Ouvrez `frontend/assets/js/config.js`
 2. Modifiez :
 
 ```javascript
 const CONFIG = {
-    // Changez cette ligne
+    // Changez cette ligne avec l'URL de votre backend Render
     API_URL: 'https://collecte-backend.onrender.com/api',
     
     // Gardez la même clé admin que dans Render
@@ -224,20 +256,7 @@ git commit -m "Update API URL for production"
 git push
 ```
 
-4. Netlify redéploiera automatiquement (1-2 minutes)
-
-**Option B : Variables d'Environnement (Avancé)**
-
-Si vous utilisez des variables d'environnement Netlify, créez un fichier `frontend/assets/js/config.prod.js` :
-
-```javascript
-const CONFIG = {
-    API_URL: import.meta.env.VITE_API_URL || 'https://collecte-backend.onrender.com/api',
-    ADMIN_KEY: import.meta.env.VITE_ADMIN_KEY,
-    WAVE_PAYMENT_URL: 'https://pay.wave.com/m/M_ci_ni2XKML6kc_S/c/ci/',
-    // ... reste de la config
-};
-```
+4. Render redéploiera automatiquement le frontend (1-2 minutes)
 
 ### 4.2 Mettre à Jour CORS sur le Backend
 
@@ -247,35 +266,11 @@ const CONFIG = {
 4. Modifiez `ALLOWED_ORIGINS` :
 
 ```plaintext
-ALLOWED_ORIGINS=https://collecte-communautaire.netlify.app
+ALLOWED_ORIGINS=https://collecte-frontend.onrender.com
 ```
 
 5. Cliquez sur **"Save Changes"**
 6. Le backend redémarrera automatiquement (30 secondes)
-
-### 4.3 Vérifier netlify.toml
-
-Le fichier `frontend/netlify.toml` devrait contenir :
-
-```toml
-[build]
-  publish = "."
-  
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-```
-
-✅ Ce fichier est déjà configuré !
 
 ---
 
@@ -311,7 +306,7 @@ GET https://collecte-backend.onrender.com/api/stats/publiques
 
 ### 5.2 Tester le Frontend
 
-1. **Ouvrez votre site** : https://collecte-communautaire.netlify.app
+1. **Ouvrez votre site** : https://collecte-frontend.onrender.com
 
 2. **Test du formulaire d'inscription** :
    - Remplissez tous les champs
@@ -319,7 +314,7 @@ GET https://collecte-backend.onrender.com/api/stats/publiques
    - Vérifiez que la section Wave s'affiche
 
 3. **Test du dashboard admin** :
-   - Allez sur : https://collecte-communautaire.netlify.app/admin/
+   - Allez sur : https://collecte-frontend.onrender.com/admin/
    - Entrez la clé admin
    - Vérifiez que l'inscription apparaît
 
@@ -349,11 +344,11 @@ Messages importants à surveiller :
 ⚠️ Erreur de validation
 ```
 
-### 6.2 Logs Frontend (Netlify)
+### 6.2 Logs Frontend (Render)
 
-1. Allez sur **Netlify Dashboard**
-2. Cliquez sur votre site
-3. Onglet **"Functions"** → **"Netlify Logs"**
+1. Allez sur **Render Dashboard**
+2. Cliquez sur votre service `collecte-frontend`
+3. Onglet **"Logs"**
 
 ### 6.3 Surveillance de la Base de Données
 
@@ -451,19 +446,20 @@ curl -H "x-admin-key: VOTRE_CLE" \
 
 ### 8.1 Domaine Personnalisé
 
-**Netlify** :
+**Frontend (Render Static Site)** :
 1. Achetez un domaine (ex: collectecommunautaire.com)
-2. Dans Netlify : **Domain settings** → **Add custom domain**
-3. Configurez les DNS selon les instructions
+2. Dans le service frontend Render : **Settings** → **Custom Domain**
+3. Ajoutez `collectecommunautaire.com`
+4. Configurez les DNS selon les instructions
 
-**Render** :
-1. Dans Render : **Settings** → **Custom Domain**
+**Backend (Render Web Service)** :
+1. Dans le service backend Render : **Settings** → **Custom Domain**
 2. Ajoutez `api.collectecommunautaire.com`
 3. Configurez le CNAME
 
 ### 8.2 HTTPS/SSL
 
-✅ Netlify et Render fournissent SSL automatiquement (Let's Encrypt)
+✅ Render fournit SSL automatiquement pour les deux services (Let's Encrypt)
 
 ### 8.3 Migration vers PostgreSQL (Recommandé)
 
@@ -480,9 +476,9 @@ Pour la production à long terme, PostgreSQL est meilleur que SQLite :
 Avant de lancer publiquement :
 
 - [ ] Backend déployé sur Render et accessible
-- [ ] Frontend déployé sur Netlify et accessible
+- [ ] Frontend déployé sur Render (Static Site) et accessible
 - [ ] API_URL mise à jour dans `config.js`
-- [ ] CORS configuré avec l'URL Netlify
+- [ ] CORS configuré avec l'URL du frontend Render
 - [ ] Clé admin sécurisée (32+ caractères)
 - [ ] Clé admin identique frontend/backend
 - [ ] Tests d'inscription réussis
@@ -498,7 +494,7 @@ Avant de lancer publiquement :
 
 ### Documentation Officielle
 - **Render** : https://render.com/docs
-- **Netlify** : https://docs.netlify.com
+- **Render Static Sites** : https://render.com/docs/static-sites
 - **Wave API** : https://developer.wave.com
 
 ### Commandes Utiles
@@ -509,10 +505,13 @@ git add .
 git commit -m "Update: votre message"
 git push
 
-# Render et Netlify redéploieront automatiquement
+# Render redéploiera automatiquement les deux services
 
-# Voir les logs Render (via Dashboard)
-# Voir les logs Netlify (via Dashboard)
+# Voir les logs Render Backend
+# Dashboard → collecte-backend → Logs
+
+# Voir les logs Render Frontend
+# Dashboard → collecte-frontend → Logs
 
 # Tester l'API localement
 curl https://collecte-backend.onrender.com/api/health
@@ -523,8 +522,8 @@ curl https://collecte-backend.onrender.com/api/health
 # Redéployer manuellement sur Render
 # Dashboard → collecte-backend → Manual Deploy → Deploy latest commit
 
-# Redéployer manuellement sur Netlify
-# Dashboard → Deploys → Trigger deploy
+# Redéployer manuellement sur Render (Frontend)
+# Dashboard → collecte-frontend → Manual Deploy → Deploy latest commit
 ```
 
 ---
@@ -534,9 +533,9 @@ curl https://collecte-backend.onrender.com/api/health
 Votre application de collecte communautaire est maintenant en production !
 
 **URLs de votre application** :
-- Frontend : `https://collecte-communautaire.netlify.app`
+- Frontend : `https://collecte-frontend.onrender.com`
 - Backend API : `https://collecte-backend.onrender.com/api`
-- Dashboard Admin : `https://collecte-communautaire.netlify.app/admin/`
+- Dashboard Admin : `https://collecte-frontend.onrender.com/admin/`
 
 ---
 
@@ -547,15 +546,16 @@ Votre application de collecte communautaire est maintenant en production !
    - Mise en veille après 15 min d'inactivité
    - Réveil ~30 secondes au premier appel
 
-2. **Plan Gratuit Netlify** :
-   - 100 GB bande passante/mois
-   - 300 minutes de build/mois
+2. **Plan Gratuit Render** :
+   - 750 heures/mois gratuites par service
+   - Static Sites : Bande passante illimitée
    - HTTPS automatique
+   - Les deux services (backend + frontend) peuvent rester sur le plan gratuit
 
 3. **Sécurité** :
    - Ne commitez JAMAIS les fichiers `.env` sur GitHub
    - Changez la clé admin régulièrement
-   - Activez l'authentification à deux facteurs (2FA) sur GitHub, Render et Netlify
+   - Activez l'authentification à deux facteurs (2FA) sur GitHub et Render
 
 4. **Performance** :
    - Le premier chargement peut être lent (réveil Render)

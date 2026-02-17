@@ -1,4 +1,5 @@
 # ✅ Checklist de Déploiement - Collecte Communautaire
+## Déploiement Complet sur Render (Backend + Frontend)
 
 ## Avant de Déployer
 
@@ -7,7 +8,7 @@
 - [x] ✅ Backend : `package.json` avec script `start`
 - [x] ✅ Backend : `.gitignore` exclut `.env` et `database/`
 - [x] ✅ Backend : `.env.example` présent pour référence
-- [x] ✅ Frontend : `netlify.toml` configuré
+- [x] ✅ Frontend : Fichiers HTML statiques prêts
 - [x] ✅ Frontend : `.gitignore` exclut fichiers sensibles
 - [x] ✅ Aucune erreur de compilation
 
@@ -15,12 +16,12 @@
 
 #### IMPORTANT : Ces valeurs doivent être changées en production !
 
-##### Backend (Variables Render)
+##### Backend (Variables Render - Service Web)
 ```env
 ADMIN_SECRET_KEY=GENERER_UNE_NOUVELLE_CLE_32_CARACTERES
 PORT=3003
 NODE_ENV=production
-ALLOWED_ORIGINS=https://VOTRE-SITE.netlify.app
+ALLOWED_ORIGINS=https://VOTRE-FRONTEND.onrender.com
 DB_PATH=./database/collecte.db
 ```
 
@@ -58,7 +59,7 @@ Copiez la clé générée et utilisez-la pour :
 - [ ] `ADMIN_SECRET_KEY`
 - [ ] `PORT=3003`
 - [ ] `NODE_ENV=production`
-- [ ] `ALLOWED_ORIGINS` (avec URL Netlify)
+- [ ] `ALLOWED_ORIGINS` (avec URL Frontend Render)
 - [ ] `DB_PATH=./database/collecte.db`
 
 ### Vérifications Post-Déploiement
@@ -68,35 +69,30 @@ Copiez la clé générée et utilisez-la pour :
 - [ ] URL backend notée : `https://____________.onrender.com`
 
 ### Tests API
-- [ ] `GET /api/health` → Status 200
-- [ ] `GET /api/stats/publiques` → Retourne des stats
+- [ ] `GET /health` → Status 200
 - [ ] Headers CORS corrects
 
 ---
 
-## Déploiement Frontend (Netlify)
+## Déploiement Frontend (Render Static Site)
 
-### Configuration du Site
+### Configuration du Service
 - [ ] Repository GitHub connecté
 - [ ] Branch : `main`
-- [ ] Base Directory : `frontend`
+- [ ] Root Directory : `frontend`
 - [ ] Build Command : (vide)
 - [ ] Publish Directory : `.`
-
-### Fichier netlify.toml
-- [ ] Présent dans `frontend/netlify.toml`
-- [ ] Headers de sécurité configurés
-- [ ] Redirections configurées
+- [ ] Type : Static Site
 
 ### Mise à Jour du Code
-- [ ] `config.js` : API_URL mis à jour avec URL Render
+- [ ] `config.js` : API_URL mis à jour avec URL Backend Render
 - [ ] `config.js` : ADMIN_KEY mis à jour
 - [ ] Changements commités et pushés
 
 ### Vérifications Post-Déploiement
 - [ ] Site déployé avec succès
 - [ ] HTTPS activé automatiquement
-- [ ] URL frontend notée : `https://____________.netlify.app`
+- [ ] URL frontend notée : `https://____________.onrender.com`
 
 ### Tests Frontend
 - [ ] Page d'accueil charge correctement
@@ -109,14 +105,15 @@ Copiez la clé générée et utilisez-la pour :
 ## Configuration Finale
 
 ### Mise à Jour CORS Backend
-- [ ] Retour sur Render
-- [ ] Modification de `ALLOWED_ORIGINS` avec URL Netlify réelle
+- [ ] Retour sur Render Dashboard
+- [ ] Sélectionner le service backend `collecte-backend`
+- [ ] Modification de `ALLOWED_ORIGINS` avec URL Frontend Render réelle
 - [ ] Service redémarré (automatique)
 
 ### Tests d'Intégration Complète
 
 #### Test 1 : Inscription Publique
-- [ ] Ouvrir `https://VOTRE-SITE.netlify.app`
+- [ ] Ouvrir `https://VOTRE-FRONTEND.onrender.com`
 - [ ] Remplir le formulaire :
   - Nom : Test
   - Prénoms : Production
@@ -134,7 +131,7 @@ Copiez la clé générée et utilisez-la pour :
 - [ ] Page Wave charge correctement
 
 #### Test 3 : Dashboard Admin
-- [ ] Ouvrir `https://VOTRE-SITE.netlify.app/admin/`
+- [ ] Ouvrir `https://VOTRE-FRONTEND.onrender.com/admin/`
 - [ ] Entrer la clé admin
 - [ ] Dashboard charge
 - [ ] Statistiques affichées :
@@ -175,13 +172,10 @@ Copiez la clé générée et utilisez-la pour :
 - [ ] Authentification 2FA activée
 - [ ] Repository privé (recommandé) ou public sans secrets
 
-### Render
+### Render (Backend + Frontend)
 - [ ] Authentification 2FA activée (recommandé)
 - [ ] Variables d'environnement masquées
-
-### Netlify
-- [ ] Authentification 2FA activée (recommandé)
-- [ ] Headers de sécurité configurés
+- [ ] Deux services créés : backend (Web Service) + frontend (Static Site)
 
 ---
 
@@ -200,8 +194,8 @@ Copiez la clé générée et utilisez-la pour :
   - Option 3 : Migration vers PostgreSQL (recommandé)
 
 ### Logs
-- [ ] Savoir accéder aux logs Render
-- [ ] Savoir accéder aux logs Netlify
+- [ ] Savoir accéder aux logs Render (backend)
+- [ ] Savoir accéder aux logs Render (frontend)
 - [ ] Comprendre les messages d'erreur courants
 
 ---
@@ -210,9 +204,9 @@ Copiez la clé générée et utilisez-la pour :
 
 ### URLs Notées
 ```
-Frontend : https://_________________________________.netlify.app
+Frontend : https://_________________________________.onrender.com
 Backend  : https://_________________________________.onrender.com
-Admin    : https://_________________________________.netlify.app/admin/
+Admin    : https://_________________________________.onrender.com/admin/
 ```
 
 ### Clés et Secrets (À GARDER SECRET)
@@ -231,24 +225,19 @@ Clé Admin : _______________________________________________
 
 ### Limitations Plan Gratuit
 
-#### Render
-- ⏱️ Mise en veille après 15 min d'inactivité
+#### Render (Backend + Frontend)
+- ⏱️ Mise en veille après 15 min d'inactivité (les deux services)
 - ⏱️ Premier appel : ~30 secondes (réveil)
-- 💾 750 heures/mois gratuites
-- 💾 Pas de persistent disk (DB réinitialisée si redéploiement complet)
-
-#### Netlify
-- 🌐 100 GB bande passante/mois
-- ⚡ 300 minutes de build/mois
-- ⚡ CDN mondial (très rapide)
+- 💾 750 heures/mois gratuites par service
+- 💾 Static Sites : Bande passante illimitée
 
 ### Optimisations
 - [ ] Monitoring pour garder l'API active (évite la mise en veille)
 - [ ] Images optimisées (logo Wave, etc.)
 - [ ] Considérer PostgreSQL pour persistance des données
 - [ ] Considérer plan payant si trafic important :
-  - Render : $7/mois
-  - Netlify : gratuit jusqu'à 100GB
+  - Render Backend : $7/mois (pas de mise en veille)
+  - Render Frontend : Gratuit (Static Sites toujours actifs)
 
 ---
 
@@ -262,11 +251,11 @@ En cas de problème critique :
 3. Trouver le dernier déploiement fonctionnel
 4. Cliquer sur **"Redeploy"**
 
-### Rollback Frontend (Netlify)
-1. Aller dans **Dashboard** → **votre-site**
-2. Onglet **"Deploys"**
+### Rollback Frontend (Render)
+1. Aller dans **Dashboard** → **collecte-frontend**
+2. Onglet **"Events"**
 3. Trouver le dernier déploiement fonctionnel
-4. Cliquer sur **"Publish deploy"**
+4. Cliquer sur **"Redeploy"****
 
 ### Rollback Git
 ```bash
@@ -296,7 +285,7 @@ Quand tout est validé :
   - Qui répond aux questions ?
 
 ### Contact pour les Inscriptions
-- URL à partager : `https://VOTRE-SITE.netlify.app`
+- URL à partager : `https://VOTRE-FRONTEND.onrender.com`
 - Montant : 10 000 F CFA
 - Moyen de paiement : Wave Mobile Money
 

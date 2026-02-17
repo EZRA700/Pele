@@ -1,0 +1,63 @@
+# Configuration complète pour Render
+# Ce fichier permet de déployer backend + frontend en une seule fois
+
+services:
+  # ========================================
+  # SERVICE BACKEND (API Node.js)
+  # ========================================
+  - type: web
+    name: collecte-backend
+    runtime: node
+    region: frankfurt  # EU Central - proche de la Côte d'Ivoire
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3003
+      - key: DB_PATH
+        value: ./database/collecte.db
+      - key: ADMIN_SECRET_KEY
+        generateValue: true  # Render génère automatiquement une clé sécurisée
+        # OU spécifiez manuellement (décommenter la ligne ci-dessous) :
+        # value: YOUR_SECURE_KEY_HERE
+      - key: ALLOWED_ORIGINS
+        # Modifiez cette valeur après le déploiement pour inclure l'URL frontend
+        value: https://collecte-frontend.onrender.com
+    healthCheckPath: /health
+    
+  # ========================================
+  # SERVICE FRONTEND (Site Statique)
+  # ========================================
+  - type: web
+    name: collecte-frontend
+    runtime: static
+    region: frankfurt  # Même région que le backend
+    plan: free
+    branch: main
+    staticPublishPath: ./frontend
+    buildCommand: ""  # Pas de build nécessaire pour un site statique
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-XSS-Protection
+        value: "1; mode=block"
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+    routes:
+      - type: rewrite
+        source: /admin/*
+        destination: /admin/index.html
