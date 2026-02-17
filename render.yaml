@@ -34,7 +34,6 @@ services:
   - type: web
     name: collecte-frontend
     runtime: static
-    region: frankfurt  # Même région que le backend
     plan: free
     branch: main
     staticPublishPath: ./frontend
