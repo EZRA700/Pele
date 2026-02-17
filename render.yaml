@@ -33,4 +33,5 @@ services:
   
   - type: web
     name: collecte-frontend
+    runtime: static
     staticPublishPath: ./frontend
