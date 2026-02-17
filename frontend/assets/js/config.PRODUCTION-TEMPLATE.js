@@ -21,7 +21,7 @@
 
 const CONFIG = {
     // ✏️ MODIFIEZ ICI : Remplacez par votre URL backend Render
-    API_URL: 'https://collecte-backend-XXXX.onrender.com/api',
+    API_URL: 'https://collecte-backend.onrender.com/api',
     
     // ✅ CLÉ ADMIN (déjà configurée - identique à celle du backend)
     ADMIN_KEY: 'f9228dc7440232c1df16f82809e394e18da2b2f8a50521e4f283ebb7fba8b01e',
