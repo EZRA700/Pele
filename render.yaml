@@ -31,11 +31,10 @@ services:
   
   # SERVICE FRONTEND (Site Statique)
   
-  - type: static
+  - type: web
     name: collecte-frontend
     branch: main
     staticPublishPath: ./frontend
-    buildCommand: ""  # Pas de build nécessaire pour un site statique
     headers:
       - path: /*
         name: X-Frame-Options
