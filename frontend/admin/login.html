@@ -242,11 +242,17 @@
     
     <!-- Script d'authentification -->
     <script>
-        // ⚠️ CREDENTIALS ADMIN - À MODIFIER PAR L'ADMINISTRATEUR
-        const ADMIN_CREDENTIALS = {
-            matricule: 'ADMIN001',  // ← Modifier ici
-            password: 'Admin@2026'   // ← Modifier ici
-        };
+        // ⚠️ CREDENTIALS ADMIN - Liste des administrateurs autorisés
+        const ADMIN_CREDENTIALS = [
+            {
+                matricule: '26PEL0ADMIN',
+                password: 'rootAdmin'
+            },
+            {
+                matricule: '22PEL0A1492',
+                password: 'password22RTTT'
+            }
+        ];
 
         // Durée de session (en millisecondes) - 2 heures
         const SESSION_DURATION = 2 * 60 * 60 * 1000;
@@ -284,8 +290,12 @@
             // Simuler un délai (pour éviter les attaques brute force)
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            // Vérification des credentials
-            if (matricule === ADMIN_CREDENTIALS.matricule && password === ADMIN_CREDENTIALS.password) {
+            // Vérification des credentials (chercher dans le tableau d'admins)
+            const adminFound = ADMIN_CREDENTIALS.find(
+                admin => admin.matricule === matricule && admin.password === password
+            );
+
+            if (adminFound) {
                 // Authentification réussie
                 createSession();
                 
