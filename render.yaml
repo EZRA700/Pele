@@ -31,10 +31,8 @@ services:
   
   # SERVICE FRONTEND (Site Statique)
   
-  - type: web
+  - type: static
     name: collecte-frontend
-    runtime: static
-    plan: free
     branch: main
     staticPublishPath: ./frontend
     buildCommand: ""  # Pas de build nécessaire pour un site statique
