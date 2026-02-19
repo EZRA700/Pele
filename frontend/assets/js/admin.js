@@ -58,7 +58,9 @@ async function loadStats() {
         });
         
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            const errorText = await response.text();
+            debugLog('Erreur HTTP:', response.status, errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
         }
         
         const result = await response.json();
@@ -67,11 +69,15 @@ async function loadStats() {
             statsData = result.data;
             displayStats();
             displayCharts();
+        } else {
+            throw new Error(result.message || 'Erreur inconnue');
         }
     } catch (error) {
         debugLog('Erreur loadStats:', error);
         if (error.message.includes('401') || error.message.includes('403')) {
             showAlert('Authentification échouée. Vérifiez la clé admin dans config.js', 'danger');
+        } else {
+            showAlert('Erreur lors du chargement des statistiques: ' + error.message, 'danger');
         }
     }
 }
@@ -88,7 +94,8 @@ function displayStats() {
     document.getElementById('stat-confirme').textContent = statsData.stats_par_statut?.confirme || 0;
     document.getElementById('stat-montant').textContent = statsData.total_collecte_formatte || '0 FCFA';
     
-    // Dernières soumissions
+    // Dernières soumissions - SECTION SUPPRIMÉE
+    /*
     const tbody = document.getElementById('recentesSoumissions');
     tbody.innerHTML = '';
     
@@ -108,6 +115,7 @@ function displayStats() {
     } else {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Aucune soumission</td></tr>';
     }
+    */
 }
 
 /**
@@ -510,13 +518,25 @@ async function exportCSV() {
 /**
  * Charge les statistiques d'une période
  */
-async function loadStatsPeriode(periode) {
+async function loadStatsPeriode(periode, event = null) {
     try {
         // Mettre à jour les boutons actifs
-        document.querySelectorAll('#section-stats .btn-group button').forEach(btn => {
+        const buttons = document.querySelectorAll('#section-stats .btn-group button');
+        buttons.forEach((btn, index) => {
             btn.classList.remove('active');
+            // Activer le bouton correspondant à la période
+            if ((periode === 'jour' && index === 0) || 
+                (periode === 'semaine' && index === 1) || 
+                (periode === 'mois' && index === 2)) {
+                btn.classList.add('active');
+            }
         });
-        event.target.classList.add('active');
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+        
+        debugLog(`Chargement stats période: ${periode}`);
+        debugLog(`URL: ${CONFIG.API_URL}/stats/periode/${periode}`);
         
         const response = await fetch(`${CONFIG.API_URL}/stats/periode/${periode}`, {
             headers: {
@@ -524,14 +544,25 @@ async function loadStatsPeriode(periode) {
             }
         });
         
+        debugLog('Réponse reçue:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            debugLog('Erreur HTTP:', response.status, errorText);
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
         const result = await response.json();
+        debugLog('Données reçues:', result);
         
         if (result.success) {
-            displayStatsperiode(result.data);
+            displayStatsPeriode(result.data);
+        } else {
+            throw new Error(result.message || 'Erreur inconnue');
         }
     } catch (error) {
         debugLog('Erreur loadStatsPeriode:', error);
-        showAlert('Erreur lors du chargement des statistiques', 'danger');
+        showAlert('Erreur lors du chargement des statistiques de période: ' + error.message, 'danger');
     }
 }
 
@@ -539,56 +570,45 @@ async function loadStatsPeriode(periode) {
  * Affiche les statistiques de période
  */
 function displayStatsPeriode(data) {
-    // Graphique d'évolution
-    const ctxEvo = document.getElementById('chartEvolution');
-    if (ctxEvo) {
-        if (charts.evolution) charts.evolution.destroy();
+    // Graphique des tailles
+    const ctxTailles = document.getElementById('chartTailles');
+    if (ctxTailles && data.stats_par_taille) {
+        if (charts.tailles) charts.tailles.destroy();
         
-        const labels = data.evolution_par_jour.map(e => formatDateShort(e.jour));
-        const counts = data.evolution_par_jour.map(e => e.count);
-        const montants = data.evolution_par_jour.map(e => e.montant_confirme);
+        const tailles = Object.keys(data.stats_par_taille).sort();
+        const counts = tailles.map(t => data.stats_par_taille[t].count);
+        const colors = [
+            '#2c7b4e', '#ff8c00', '#dc3545', '#0d6efd', '#6f42c1', '#20c997'
+        ];
         
-        charts.evolution = new Chart(ctxEvo, {
-            type: 'line',
+        charts.tailles = new Chart(ctxTailles, {
+            type: 'bar',
             data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Nombre de soumissions',
-                        data: counts,
-                        borderColor: '#2c7b4e',
-                        backgroundColor: 'rgba(44, 123, 78, 0.1)',
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Montant collecté (FCFA)',
-                        data: montants,
-                        borderColor: '#ff8c00',
-                        backgroundColor: 'rgba(255, 140, 0, 0.1)',
-                        yAxisID: 'y1'
-                    }
-                ]
+                labels: tailles,
+                datasets: [{
+                    label: 'Nombre de personnes',
+                    data: counts,
+                    backgroundColor: colors.slice(0, tailles.length),
+                    borderColor: colors.slice(0, tailles.length),
+                    borderWidth: 1
+                }]
             },
             options: {
                 responsive: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
                 },
                 scales: {
                     y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
                         beginAtZero: true,
-                        grid: {
-                            drawOnChartArea: false
+                        ticks: {
+                            stepSize: 1
                         }
                     }
                 }
@@ -596,51 +616,48 @@ function displayStatsPeriode(data) {
         });
     }
     
-    // Top contributeurs
-    const topDiv = document.getElementById('topContributeurs');
-    if (topDiv && data.top_contributeurs) {
-        let html = '<div class="list-group">';
-        data.top_contributeurs.forEach((c, index) => {
-            html += `
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${index + 1}. ${c.nom} ${c.prenoms}</strong><br>
-                            <small class="text-muted">${c.telephone}</small>
-                        </div>
-                        <div class="text-end">
-                            <div class="fw-bold text-success">${c.total_montant_formatte}</div>
-                            <small class="text-muted">${c.nb_contributions} contribution(s)</small>
-                        </div>
-                    </div>
-                </div>
-            `;
+    // Graphique des âges
+    const ctxAges = document.getElementById('chartAges');
+    if (ctxAges && data.stats_par_age) {
+        if (charts.ages) charts.ages.destroy();
+        
+        const tranches = ['Moins de 18', '18-25', '26-35', '36-45', '46-55', 'Plus de 55'];
+        const counts = tranches.map(t => data.stats_par_age[t] ? data.stats_par_age[t].count : 0);
+        const colors = [
+            '#6f42c1', '#0d6efd', '#20c997', '#ffc107', '#fd7e14', '#dc3545'
+        ];
+        
+        charts.ages = new Chart(ctxAges, {
+            type: 'doughnut',
+            data: {
+                labels: tranches,
+                datasets: [{
+                    label: 'Nombre de personnes',
+                    data: counts,
+                    backgroundColor: colors,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                }
+            }
         });
-        html += '</div>';
-        topDiv.innerHTML = html;
-    }
-    
-    // Répartition par taille de tee-shirt
-    const taillesDiv = document.getElementById('taillesTeeShirts');
-    if (taillesDiv && statsData.stats_par_taille) {
-        let html = '<div class="list-group">';
-        Object.entries(statsData.stats_par_taille).forEach(([taille, data]) => {
-            html += `
-                <div class="list-group-item">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>Taille ${taille}</strong>
-                        </div>
-                        <div class="text-end">
-                            <div class="fw-bold text-primary-custom">${data.montant_formatte}</div>
-                            <small class="text-muted">${data.count} inscription(s)</small>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        html += '</div>';
-        taillesDiv.innerHTML = html;
     }
 }
 

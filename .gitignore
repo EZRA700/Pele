@@ -1,0 +1,23 @@
+# 🔐 FICHIERS SENSIBLES - NE PAS COMMITTER
+IDENTIFIANTS-ADMIN.md
+*IDENTIFIANTS*.md
+*PASSWORD*.md
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Environnement
+.env
+.env.local
+.env.*.local

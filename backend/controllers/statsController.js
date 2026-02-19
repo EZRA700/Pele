@@ -76,12 +76,48 @@ async function getStatsGlobales(req, res) {
     const tailleStats = await queryAll(
       `SELECT taille_tee_shirt, COUNT(*) as count, SUM(montant) as total
        FROM soumissions
-       GROUP BY taille_tee_shirt`
+       GROUP BY taille_tee_shirt
+       ORDER BY taille_tee_shirt`
     );
 
     const statsParTaille = {};
     tailleStats.forEach(stat => {
       statsParTaille[stat.taille_tee_shirt] = {
+        count: stat.count,
+        montant: stat.total || 0,
+        montant_formatte: formatMontant(stat.total || 0)
+      };
+    });
+
+    // Répartition par âge (tranches de 10 ans)
+    const ageStats = await queryAll(
+      `SELECT 
+         CASE
+           WHEN age < 18 THEN 'Moins de 18'
+           WHEN age BETWEEN 18 AND 25 THEN '18-25'
+           WHEN age BETWEEN 26 AND 35 THEN '26-35'
+           WHEN age BETWEEN 36 AND 45 THEN '36-45'
+           WHEN age BETWEEN 46 AND 55 THEN '46-55'
+           WHEN age > 55 THEN 'Plus de 55'
+         END as tranche_age,
+         COUNT(*) as count,
+         SUM(montant) as total
+       FROM soumissions
+       GROUP BY tranche_age
+       ORDER BY 
+         CASE
+           WHEN age < 18 THEN 1
+           WHEN age BETWEEN 18 AND 25 THEN 2
+           WHEN age BETWEEN 26 AND 35 THEN 3
+           WHEN age BETWEEN 36 AND 45 THEN 4
+           WHEN age BETWEEN 46 AND 55 THEN 5
+           WHEN age > 55 THEN 6
+         END`
+    );
+
+    const statsParAge = {};
+    ageStats.forEach(stat => {
+      statsParAge[stat.tranche_age] = {
         count: stat.count,
         montant: stat.total || 0,
         montant_formatte: formatMontant(stat.total || 0)
@@ -115,6 +151,7 @@ async function getStatsGlobales(req, res) {
         montants_par_statut: montantsParStatut,
         stats_par_moyen_paiement: statsParMoyenPaiement,
         stats_par_taille: statsParTaille,
+        stats_par_age: statsParAge,
         dernieres_soumissions: dernieresSoumissions
       }
     });
@@ -174,6 +211,62 @@ async function getStatsPeriode(req, res) {
       [startDate, endDate]
     );
 
+    // Répartition par taille sur la période
+    const tailleStats = await queryAll(
+      `SELECT taille_tee_shirt, COUNT(*) as count, SUM(montant) as total
+       FROM soumissions
+       WHERE date_soumission >= ? AND date_soumission <= ?
+       GROUP BY taille_tee_shirt
+       ORDER BY taille_tee_shirt`,
+      [startDate, endDate]
+    );
+
+    const statsParTaille = {};
+    tailleStats.forEach(stat => {
+      statsParTaille[stat.taille_tee_shirt] = {
+        count: stat.count,
+        montant: stat.total || 0,
+        montant_formatte: formatMontant(stat.total || 0)
+      };
+    });
+
+    // Répartition par âge sur la période
+    const ageStats = await queryAll(
+      `SELECT 
+         CASE
+           WHEN age < 18 THEN 'Moins de 18'
+           WHEN age BETWEEN 18 AND 25 THEN '18-25'
+           WHEN age BETWEEN 26 AND 35 THEN '26-35'
+           WHEN age BETWEEN 36 AND 45 THEN '36-45'
+           WHEN age BETWEEN 46 AND 55 THEN '46-55'
+           WHEN age > 55 THEN 'Plus de 55'
+         END as tranche_age,
+         COUNT(*) as count,
+         SUM(montant) as total
+       FROM soumissions
+       WHERE date_soumission >= ? AND date_soumission <= ?
+       GROUP BY tranche_age
+       ORDER BY 
+         CASE
+           WHEN age < 18 THEN 1
+           WHEN age BETWEEN 18 AND 25 THEN 2
+           WHEN age BETWEEN 26 AND 35 THEN 3
+           WHEN age BETWEEN 36 AND 45 THEN 4
+           WHEN age BETWEEN 46 AND 55 THEN 5
+           WHEN age > 55 THEN 6
+         END`,
+      [startDate, endDate]
+    );
+
+    const statsParAge = {};
+    ageStats.forEach(stat => {
+      statsParAge[stat.tranche_age] = {
+        count: stat.count,
+        montant: stat.total || 0,
+        montant_formatte: formatMontant(stat.total || 0)
+      };
+    });
+
     // Évolution par jour (pour graphique)
     const evolutionParJour = await queryAll(
       `SELECT 
@@ -207,6 +300,8 @@ async function getStatsPeriode(req, res) {
         date_fin: endDate,
         total_soumissions,
         stats_par_statut: statsParStatut,
+        stats_par_taille: statsParTaille,
+        stats_par_age: statsParAge,
         total_collecte,
         total_collecte_formatte: formatMontant(total_collecte),
         evolution_par_jour: evolutionParJour.map(e => ({

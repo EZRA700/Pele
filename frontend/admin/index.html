@@ -250,63 +250,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Graphiques -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Répartition par statut</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="chartStatut"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Répartition par moyen de paiement</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="chartPaiement"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dernières soumissions -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h6 class="mb-0">Dernières soumissions</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="tableRecentes">
-                                    <thead>
-                                        <tr>
-                                            <th>Référence</th>
-                                            <th>Nom</th>
-                                            <th>Prénoms</th>
-                                            <th>Montant</th>
-                                            <th>Statut</th>
-                                            <th>Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="recentesSoumissions">
-                                        <tr>
-                                            <td colspan="6" class="text-center">
-                                                <div class="spinner-border text-primary" role="status">
-                                                    <span class="visually-hidden">Chargement...</span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Section: Soumissions -->
@@ -396,13 +339,13 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="btn-group" role="group">
-                                <button class="btn btn-outline-primary active" onclick="loadStatsPeriode('jour')">
+                                <button class="btn btn-outline-primary active" onclick="loadStatsPeriode('jour', event)">
                                     Aujourd'hui
                                 </button>
-                                <button class="btn btn-outline-primary" onclick="loadStatsPeriode('semaine')">
+                                <button class="btn btn-outline-primary" onclick="loadStatsPeriode('semaine', event)">
                                     Cette semaine
                                 </button>
-                                <button class="btn btn-outline-primary" onclick="loadStatsPeriode('mois')">
+                                <button class="btn btn-outline-primary" onclick="loadStatsPeriode('mois', event)">
                                     Ce mois
                                 </button>
                             </div>
@@ -411,39 +354,24 @@
 
                     <!-- Graphiques statistiques -->
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Évolution des contributions</h6>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="chartEvolution"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Top contributeurs</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div id="topContributeurs">
-                                        <p class="text-muted">Chargement...</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <div class="card">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
                                 <div class="card-header">
                                     <h6 class="mb-0">Répartition par taille de tee-shirt</h6>
                                 </div>
                                 <div class="card-body">
                                     <canvas id="chartTailles"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Répartition par âge</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="chartAges"></canvas>
                                 </div>
                             </div>
                         </div>

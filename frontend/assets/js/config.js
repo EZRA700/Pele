@@ -7,8 +7,8 @@
 const CONFIG = {
     // URL de l'API Backend
     // Développement local: http://localhost:3003/api
-    // Production Render: https://votre-backend.onrender.com/api
-    API_URL: 'https://collecte-backend.onrender.com/api',
+    // Production Render: https://collecte-backend.onrender.com/api
+    API_URL: 'https://collecte-backend.onrender.com/api',  // ← PRODUCTION
     
     // Clé secrète admin (doit correspondre à ADMIN_SECRET_KEY du backend)
     // ⚠️ NE JAMAIS COMMITTER la vraie clé sur GitHub
