@@ -8,7 +8,7 @@ const CONFIG = {
     // URL de l'API Backend
     // Développement local: http://localhost:3003/api
     // Production Render: https://collecte-backend.onrender.com/api
-    API_URL: 'https://collecte-backend.onrender.com/api',  // ← PRODUCTION
+    API_URL: 'https://localhost:3003/api',  // ← PRODUCTION
     
     // Clé secrète admin (doit correspondre à ADMIN_SECRET_KEY du backend)
     // ⚠️ NE JAMAIS COMMITTER la vraie clé sur GitHub
@@ -40,11 +40,14 @@ const CONFIG = {
         maxPagesShown: 5
     },
     
-    // Montants suggérés (en FCFA)
-    MONTANTS_SUGGERES: [1000, 2000, 5000, 10000, 20000, 50000],
+    // Montant fixe de l'inscription (en FCFA)
+    MONTANT_FIXE: 6000,
+    
+    // Montants suggérés (en FCFA) - Non utilisés, montant fixe appliqué
+    MONTANTS_SUGGERES: [6000],
     
     // Montant minimum autorisé
-    MONTANT_MIN: 100,
+    MONTANT_MIN: 6000,
     
     // Configuration des messages
     MESSAGES: {

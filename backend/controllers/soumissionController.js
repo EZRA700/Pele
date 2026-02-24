@@ -27,6 +27,10 @@ async function createSoumission(req, res) {
       montant
     } = req.body;
 
+    // Montant fixe de l'inscription
+    const MONTANT_FIXE = 6000;
+    const montantFinal = montant || MONTANT_FIXE;
+
     // Générer une référence unique
     let reference = generateReference();
     let attempts = 0;
@@ -72,7 +76,7 @@ async function createSoumission(req, res) {
         taille_tee_shirt,
         telephone,
         numero_paiement,
-        montant,
+        montantFinal,
         date_soumission,
         ip_adresse,
         user_agent
@@ -93,7 +97,7 @@ async function createSoumission(req, res) {
         taille_tee_shirt,
         telephone,
         numero_paiement,
-        montant,
+        montant: montantFinal,
         moyen_paiement: 'wave',
         statut: 'en_attente',
         date_soumission

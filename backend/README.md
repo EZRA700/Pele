@@ -60,7 +60,7 @@ Content-Type: application/json
   "quartier": "Cocody",
   "type_contribution": "Cotisation mensuelle",
   "description": "Contribution de janvier",
-  "montant": 5000,
+  "montant": 6000,
   "moyen_paiement": "wave"
 }
 ```
@@ -199,7 +199,7 @@ curl -X POST http://localhost:3003/api/soumissions \
     "nom_complet": "Test User",
     "telephone": "0712345678",
     "type_contribution": "Test",
-    "montant": 1000,
+    "montant": 6000,
     "moyen_paiement": "wave"
   }'
 ```

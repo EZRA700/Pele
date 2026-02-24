@@ -5,50 +5,14 @@
 // État de l'application
 let soumissionData = null;
 
+// Montant fixe de l'inscription
+const MONTANT_FIXE = 6000;
+
 /**
  * Initialise l'application
  */
 function initializeApp() {
-    generateMontantsSuggeres();
     attachEventListeners();
-}
-
-/**
- * Génère les boutons de montants suggérés
- */
-function generateMontantsSuggeres() {
-    const container = document.getElementById('montants-suggeres');
-    if (!container) return;
-
-    const montants = CONFIG.MONTANTS_SUGGERES || [5000, 10000, 25000, 50000, 100000];
-
-    montants.forEach(montant => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn btn-outline-primary';
-        btn.textContent = formatMontantCFA(montant);
-        btn.onclick = () => selectMontant(montant);
-        container.appendChild(btn);
-    });
-}
-
-/**
- * Sélectionne un montant suggéré
- */
-function selectMontant(montant) {
-    document.getElementById('montant').value = montant;
-    
-    // Retirer la classe active de tous les boutons
-    document.querySelectorAll('#montants-suggeres .btn').forEach(btn => {
-        btn.classList.remove('active');
-        btn.classList.add('btn-outline-primary');
-        btn.classList.remove('btn-primary');
-    });
-    
-    // Ajouter la classe active au bouton cliqué
-    event.target.classList.add('active');
-    event.target.classList.remove('btn-outline-primary');
-    event.target.classList.add('btn-primary');
 }
 
 /**
@@ -92,7 +56,7 @@ async function handleSubmit(event) {
         taille_tee_shirt: document.getElementById('taille_tee_shirt').value,
         telephone: document.getElementById('telephone').value.trim(),
         numero_paiement: document.getElementById('numero_paiement').value.trim(),
-        montant: parseFloat(document.getElementById('montant').value)
+        montant: MONTANT_FIXE
     };
 
     // Désactiver le bouton de soumission

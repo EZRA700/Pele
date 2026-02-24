@@ -60,8 +60,8 @@ const validateCreateSoumission = [
     .matches(/^[0-9\s\-\+\(\)]{8,20}$/).withMessage('Format de numéro de paiement invalide'),
   
   body('montant')
-    .notEmpty().withMessage('Le montant est requis')
-    .isFloat({ min: 100 }).withMessage('Le montant minimum est de 100 FCFA'),
+    .optional()
+    .isFloat({ min: 6000 }).withMessage('Le montant doit être de 6000 FCFA'),
   
   body('moyen_paiement')
     .optional()
