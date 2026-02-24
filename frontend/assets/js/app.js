@@ -130,7 +130,7 @@ function showPaymentSection(data) {
 
     // Mettre à jour le lien Wave avec le montant (si l'API Wave le permet)
     const waveLink = document.getElementById('wave-payment-link');
-    const baseUrl = CONFIG.WAVE_PAYMENT_URL || 'https://pay.wave.com/m/M_ci_ni2XKML6kc_S/c/ci/';
+    const baseUrl = CONFIG.WAVE_PAYMENT_URL || 'https://pay.wave.com/m/M_ci_ni2XKML6kc_S/c/ci/6060';
     waveLink.href = baseUrl;
 
     // Afficher la carte de paiement et masquer le formulaire
