@@ -16,7 +16,7 @@ const CONFIG = {
     ADMIN_KEY: 'f9228dc7440232c1df16f82809e394e18da2b2f8a50521e4f283ebb7fba8b01e',
     
     // Lien de paiement Wave (compte marchand)
-    WAVE_PAYMENT_URL: 'https://pay.wave.com/m/M_ci_ni2XKML6kc_S/c/ci/?amount=6060',
+    WAVE_PAYMENT_URL: 'https://pay.wave.com/m/M_ci_B2MjgWyTQN3C/c/ci/?amount=6060',
     
     // Labels des statuts
     STATUT_LABELS: {
