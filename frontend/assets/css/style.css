@@ -5,12 +5,12 @@
 
 /* === VARIABLES CSS === */
 :root {
-    --primary-color: #2c7b4e;
-    --primary-dark: #1e5a37;
-    --primary-light: #3a9d5d;
+    --primary-color: #4938c7;
+    --primary-dark: #4938c4;
+    --primary-light: #6a5af9;
     --secondary-color: #ff8c00;
     --secondary-dark: #e67e00;
-    --success-color: #28a745;
+    --success-color: #6a5af9;
     --danger-color: #dc3545;
     --warning-color: #ffc107;
     --info-color: #17a2b8;
@@ -22,8 +22,8 @@
     --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     --box-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --gradient-primary: linear-gradient(135deg, #2c7b4e 0%, #1e5a37 100%);
-    --gradient-secondary: linear-gradient(135deg, #ff8c00 0%, #e67e00 100%);
+    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
     --gradient-bg: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
 }
 
