@@ -502,17 +502,70 @@ body {
 }
 
 /* === RESPONSIVE === */
+
+/* Tablettes et petits écrans */
+@media (max-width: 992px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .navbar-brand {
+        font-size: 0.9rem;
+    }
+    
+    .navbar-brand > div > div:first-child {
+        font-size: 1rem !important;
+    }
+    
+    .card-header {
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .card-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .btn-group .btn {
+        flex: 1 1 auto;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Smartphones */
 @media (max-width: 768px) {
     .page-header {
         padding: 2rem 0;
+        margin-bottom: 1rem;
     }
     
     .page-header h1 {
         font-size: 1.75rem;
     }
     
+    .page-header p {
+        font-size: 1rem;
+    }
+    
     .card-body {
         padding: 1.5rem;
+    }
+    
+    .card-header {
+        padding: 1rem 1.25rem;
     }
     
     .reference-code {
@@ -526,11 +579,85 @@ body {
     .stat-card .stat-value {
         font-size: 1.5rem;
     }
+    
+    .stat-card .stat-icon {
+        font-size: 2rem;
+    }
+    
+    /* Navbar responsive */
+    .navbar-brand > div {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+    
+    .navbar-brand > div > div:last-child {
+        font-size: 0.65rem !important;
+    }
+    
+    /* Formulaires */
+    .row.g-3 > .col-md-6,
+    .row.g-3 > .col-md-4 {
+        margin-bottom: 1rem;
+    }
+    
+    /* Boutons empilés */
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        border-radius: var(--border-radius-sm) !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Hero section */
+    section.bg-primary {
+        padding: 2rem 0 !important;
+    }
+    
+    section.bg-primary h1 {
+        font-size: 2rem !important;
+    }
+    
+    section.bg-primary p {
+        font-size: 1rem !important;
+    }
+    
+    /* Tables */
+    .table {
+        font-size: 0.875rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        white-space: nowrap;
+    }
+    
+    /* Modal */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    /* Payment options */
+    .payment-option {
+        padding: 1rem;
+    }
+    
+    .payment-logo {
+        width: 60px;
+    }
 }
 
 @media (max-width: 576px) {
     body {
-        padding: 10px 0;
+        padding: 0;
+    }
+    
+    .container {
+        padding: 0 10px;
     }
     
     .btn {
@@ -540,6 +667,147 @@ body {
     
     .card-body {
         padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 0.875rem 1rem;
+    }
+    
+    .card-header h4 {
+        font-size: 1rem;
+    }
+    
+    .card-header i {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Navbar ultra compact */
+    .navbar {
+        padding: 0.5rem;
+    }
+    
+    .navbar-brand {
+        font-size: 0.75rem;
+    }
+    
+    .navbar-brand > div > div[style*="width: 50px"] {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .navbar-brand > div > div:first-child {
+        font-size: 0.875rem !important;
+    }
+    
+    .navbar-brand > div > div:last-child {
+        display: none;
+    }
+    
+    /* Hero section compact */
+    section.bg-primary {
+        padding: 1.5rem 0 !important;
+    }
+    
+    section.bg-primary h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    section.bg-primary p {
+        font-size: 0.875rem !important;
+    }
+    
+    section.bg-primary i {
+        font-size: 3rem !important;
+    }
+    
+    /* Forms */
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .form-control,
+    .form-select {
+        padding: 10px 12px;
+        font-size: 0.875rem;
+    }
+    
+    /* Reference code */
+    .reference-code {
+        font-size: 1.25rem;
+        letter-spacing: 1px;
+    }
+    
+    .reference-box {
+        padding: 1.5rem;
+    }
+    
+    /* Stats cards */
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 0.75rem;
+    }
+    
+    .stat-card .stat-icon {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Payment number */
+    .payment-number {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+    
+    /* Payment options */
+    .payment-option {
+        padding: 0.75rem;
+    }
+    
+    .payment-logo {
+        width: 50px;
+    }
+    
+    /* Instructions */
+    .payment-instructions {
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+    
+    /* Montants suggérés */
+    .montant-btn {
+        padding: 0.75rem;
+    }
+    
+    .montant-btn .amount {
+        font-size: 1rem;
+    }
+    
+    /* Icon circle */
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    /* Steps */
+    .step-item {
+        padding-left: 2.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .step-item::before {
+        width: 1.75rem;
+        height: 1.75rem;
+        font-size: 0.875rem;
     }
 }
 
